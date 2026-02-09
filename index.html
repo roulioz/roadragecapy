@@ -111,8 +111,8 @@
 		</div>
 		<img id="chat" src="voiture.png">
 		<img id="fumee" src="smoke.gif">
-		<div class="boutons" onmousedown="gdown()" onmouseup="gup()" onmouseout="gup()"></div>
-		<div class="boutons" onmousedown="ddown()" onmouseup="dup()" onmouseout="dup()" style="left: 80%"></div>
+		<div class="boutons" onmousedown="gdown()" ontouchstart="gdown()" ontouchend="gup()" onmouseup="gup()" onmouseout="gup()"></div>
+		<div class="boutons" onmousedown="ddown()" ontouchstart="ddown()" ontouchend="dup()" onmouseup="dup()" onmouseout="dup()" style="left: 80%"></div>
 	</div>	
 	<script>		
 		let vitesseX = 0;
@@ -252,6 +252,7 @@
 	</script>
 </body>
 </html>
+
 
 
 
