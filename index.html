@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>RoadRageCapybara</title>
+    <style>
+        /* Styles de base pour le corps de la page */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8; /* Arrière-plan gris/bleu très clair */
+            height: 100vh;
+            margin: 0;
+			overflow: hidden;			
+			width: 800px;
+			margin: auto;
+			border: 2px solid gray;
+			user-select: none;
+        }
+		
+		#fond{
+			position: relative;
+			left: 0px;
+			top: 0px;
+			background-image: url("route.png");
+			background-size: 800px;
+			width: 800px;
+			height: 100%;
+			background-repeat: repeat-y;				
+		}
+
+		img{
+			width: 100px;
+			position: absolute;
+			left: 200px;
+			top: 800px;
+		}
+		
+		#chat{
+			width: 40px;
+			top: 460px;
+			z-index: 100;
+		}
+		
+		#fumee{
+			width: 80px;
+			top: 555px;			
+			transform: rotateZ(180deg);
+		}
+		
+		.boutons{
+			position: absolute;
+			width: 100px;
+			height: 100px;
+			border: 2px solid black;
+			border-radius: 20px;
+			left: 10%;
+			top: 80%;
+			background: linear-gradient(45deg, rgba(60,60,60,0.5), rgba(230,230,230,0.4));
+		}
+		
+		#monstres>img{
+			width: 45px;
+		}
+		#obstacles>img{
+			width: 80px;
+			z-index: 150;
+		}
+		#score{
+			font-size: 50pt;
+			position: relative;
+			left: 85%;
+			top: 5%;
+			z-index: 1000;
+			font-family: impact;
+		}
+		#gover{
+			font-size: 30pt;
+			position: absolute;
+			left: 26%;
+			top: 40%;
+			z-index: 1200;
+			font-family: impact;
+			text-align: center;
+			text-shadow: 0px 0px 5px yellow, 0px 0px 5px yellow, 0px 0px 5px yellow;
+			border: 2px solid black;
+			border-radius: 50px;
+			padding: 30px;
+			background: linear-gradient(45deg, rgba(60,60,60,0.5), rgba(230,230,230,0.4));
+			display: none;
+		}
+    </style>
+</head>
+<body onkeydown="kdown(event)" onkeyup="kup(event)">	
+	<div id="fond">
+		<span id="gover" onclick="restart()">GAME OVER !<br>CLICK TO TRY AGAIN</span>
+		<span id="score">0</span>
+		<div id="monstres">
+			<img src="capybara.gif">
+			<img src="capybara.gif">
+			<img src="capybara.gif">
+			<img src="capybara.gif">
+			<img src="capybara.gif">
+		</div>
+		<div id="obstacles">
+			<img src="barriere.png">
+			<img src="barriere.png">
+		</div>
+		<div id="sang">
+		</div>
+		<img id="chat" src="voiture.png">
+		<img id="fumee" src="smoke.gif">
+		<div class="boutons" onmousedown="gdown()" onmouseup="gup()" onmouseout="gup()"></div>
+		<div class="boutons" onmousedown="ddown()" onmouseup="dup()" onmouseout="dup()" style="left: 80%"></div>
+	</div>	
+	<script>		
+		let vitesseX = 0;
+		let gscore = 0;
+		let minX = 190;
+		let maxX = 550;
+		let posY = 0;
+		let defilement = 0.8;
+
+		function gdown(){
+			vitesseX = -(2 + (gscore / 100));
+		}
+		function gup(){
+			vitesseX = 0;
+		}
+		function ddown(){
+		   vitesseX = 2 + (gscore / 100);
+		}
+		function dup(){
+			vitesseX = 0;
+		}
+		function kdown(event){
+			if (event.keyCode==37)
+				gdown();
+			if (event.keyCode==39)
+				ddown();				
+		}
+		function kup(event){
+			if (event.keyCode==37)
+				gup();
+			if (event.keyCode==39)
+				dup();	
+			
+		}
+		
+		function restart(){
+			document.location.reload();
+		}
+		
+		// A l'init active les capybaras
+		for (let i=0; i<monstres.children.length; i++){
+			let enfant = monstres.children[i];
+			enfant.vitesseX = (Math.random() * 50 - 100) / 140;
+			enfant.posY = enfant.offsetTop;
+			enfant.posX = enfant.offsetLeft;
+		}
+		// Et les barrières
+		for (let i=0; i<obstacles.children.length; i++){
+			let enfant = obstacles.children[i];
+			enfant.posY = enfant.offsetTop;
+			enfant.posX = enfant.offsetLeft;
+		}
+		
+		// Lance un timer qui appel jeu toutes les 1 ms
+		let timer = setInterval(jeu, 1);		
+		
+		function jeu(){						
+			let position = chat.offsetLeft;			
+			position += vitesseX;
+			if (position < minX)
+				position = minX;
+			if (position > maxX)
+				position = maxX;			
+			chat.style.left = position + "px";
+			fumee.style.left = position -10 + "px";
+			for (let i=0; i<monstres.children.length; i++){
+				let enfant = monstres.children[i];
+				enfant.posY += defilement;
+				enfant.posX += enfant.vitesseX;
+				if (enfant.posX < minX || enfant.posX > maxX){
+					enfant.vitesseX *= -1;
+					if (enfant.vitesseX > 0)
+						enfant.style.transform = "rotateY(0deg)";
+					else
+						enfant.style.transform = "rotateY(180deg)";
+				}
+				if (enfant.posY > document.body.clientHeight){
+					enfant.posY = -500 * Math.random();
+					let nb = Math.random(); // 0 - 1
+					nb = nb * (maxX-minX) + minX;
+					enfant.posX = nb;
+				}
+				enfant.style.top = enfant.posY + "px";
+				enfant.style.left = enfant.posX + "px";
+				
+				if (collision(enfant, chat) == true){					
+					let bsplat = document.createElement("img");
+					bsplat.src = "blood.png";
+					bsplat.style.width = "50px";
+					bsplat.style.left = chat.offsetLeft + "px";
+					bsplat.style.top = chat.offsetTop - 40 + "px";
+					sang.appendChild(bsplat);
+					gscore++;
+					score.innerText = gscore;
+					score.style.color = "yellow";
+					setTimeout(function(){score.style.color = "black";},100);
+					enfant.posY = -500 * Math.random();
+					defilement += 0.02;
+				}
+			}
+			for (let i=0; i<obstacles.children.length; i++){
+				let enfant = obstacles.children[i];
+				enfant.posY += defilement;
+				if (enfant.posY > document.body.clientHeight){
+					enfant.posY = -500 * Math.random();
+					let nb = Math.random(); // 0 - 1
+					nb = nb * (maxX-minX) + minX;
+					enfant.style.left = nb + "px";
+				}
+				enfant.style.top = enfant.posY + "px";
+				if (collision(enfant, chat) == true){			
+					clearInterval(timer);
+					gover.style.display = "block";
+				}
+			}
+			for (let i=0; i<sang.children.length; i++){
+				let stop = sang.children[i].offsetTop;
+				stop+=defilement;
+				sang.children[i].style.top = stop + "px";
+				if (stop > fond.clientHeight)
+					sang.removeChild(sang.children[i]);
+			}
+			posY+=defilement;
+			fond.style.backgroundPositionY = posY + "px";
+		}
+		
+		function collision(box1, box2)
+		{
+		   if((box2.offsetLeft >= box1.offsetLeft + box1.clientWidth)      // trop à droite
+			|| (box2.offsetLeft + box2.clientWidth <= box1.offsetLeft) // trop à gauche
+			|| (box2.offsetTop >= box1.offsetTop + box1.clientHeight) // trop en bas
+			|| (box2.offsetTop + box2.clientHeight <= box1.offsetTop))  // trop en haut
+				  return false; 
+		   else
+				  return true; 
+		}
+	</script>
+</body>
+</html>
+
+
+

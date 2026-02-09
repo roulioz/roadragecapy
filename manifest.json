@@ -1,0 +1,59 @@
+{
+    "lang": "en",
+    "dir": "ltr",
+    "name": "Road Rage Capybara",
+    "description": "Kill them all!",
+    "short_name": "RRCapy",
+    "scope": "/roadragecapy/",
+    "start_url": "/roadragecapy/",
+    "display": "standalone",
+    "orientation": "any",
+    "theme_color": "#000000",
+    "background_color": "#1e90ff",
+    "icons": [
+        {
+            "src": "barriere.png",
+            "sizes": "16x16"
+        },
+        {
+            "src": "barriere.png",
+            "sizes": "48x48"
+        },
+        {
+            "src": "barriere.png",
+            "sizes": "64x64"
+        },
+        {
+            "src": "barriere.png",
+            "sizes": "72x72"
+        },
+        {
+            "src": "barriere.png",
+            "sizes": "96x96"
+        },
+        {
+            "src": "barriere.png",
+            "sizes": "128x128"
+        },
+        {
+            "src": "barriere.png",
+            "sizes": "144x144"
+        },
+        {
+            "src": "barriere.png",
+            "sizes": "152x152"
+        },
+        {
+            "src": "barriere.png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "barriere.png",
+            "sizes": "256x256"
+        },
+        {
+            "src": "barriere.png",
+            "sizes": "512x512"
+        }
+    ]
+}
